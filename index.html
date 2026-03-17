@@ -10,8 +10,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--y:#F5C518;--yd:#D4A017;--ym:#FAEEDA;--bg:#FAFAF8;--card:#fff;--txt:#1A1A1A;--muted:#6B6B6B;--bdr:rgba(0,0,0,0.08);}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);direction:rtl;}
-
-/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1A1A1A;}
 .login-box{background:#222;border-radius:20px;padding:40px;width:340px;text-align:center;}
 .login-logo{font-size:36px;font-weight:700;color:#F5C518;margin-bottom:8px;}
@@ -20,10 +18,8 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);direct
 .login-input::placeholder{color:rgba(255,255,255,0.3);}
 .login-btn{width:100%;background:#F5C518;color:#1A1A1A;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;font-family:'Cairo',sans-serif;cursor:pointer;margin-top:4px;}
 .login-err{font-size:12px;color:#E24B4A;margin-top:8px;}
-
-/* APP */
-.app{display:none;flex;min-height:100vh;}
-.sb{width:210px;background:#1A1A1A;display:flex;flex-direction:column;padding:20px 0;position:fixed;height:100vh;}
+.app{display:none;min-height:100vh;}
+.sb{width:210px;background:#1A1A1A;display:flex;flex-direction:column;padding:20px 0;position:fixed;height:100vh;z-index:20;}
 .logo{padding:0 18px 20px;border-bottom:0.5px solid rgba(255,255,255,0.1);}
 .logo-t{font-size:22px;font-weight:700;color:#F5C518;}
 .logo-s{font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;}
@@ -37,14 +33,13 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);direct
 .uav{width:34px;height:34px;border-radius:50%;background:#F5C518;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#1A1A1A;flex-shrink:0;}
 .un{font-size:11px;font-weight:600;color:white;}
 .up{font-size:10px;color:#F5C518;}
-.main{flex:1;margin-right:210px;display:flex;flex-direction:column;}
+.main{margin-right:210px;display:flex;flex-direction:column;min-height:100vh;}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:0.5px solid var(--bdr);background:var(--card);position:sticky;top:0;z-index:10;}
 .pt{font-size:15px;font-weight:700;}
 .dbadge{font-size:11px;color:var(--muted);background:var(--ym);padding:4px 11px;border-radius:20px;}
 .content{padding:18px 22px;display:flex;flex-direction:column;gap:14px;}
 .page{display:none;flex-direction:column;gap:14px;}
-.page.active{display:flex;animation:fadeIn .25s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.page.active{display:flex;}
 .card{background:var(--card);border:0.5px solid var(--bdr);border-radius:13px;padding:15px 17px;}
 .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
 .ct{font-size:13px;font-weight:700;}
@@ -59,7 +54,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);direct
 .sbf{height:100%;background:#F5C518;border-radius:2px;}
 .ti{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:0.5px solid var(--bdr);}
 .ti:last-child{border-bottom:none;}
-.tck{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
+.tck{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--bdr);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .tck.done{background:#F5C518;border-color:#F5C518;}
 .tck.done::after{content:'';width:8px;height:4px;border-left:2px solid #1A1A1A;border-bottom:2px solid #1A1A1A;transform:rotate(-45deg) translateY(-1px);display:block;}
 .tt{font-size:12px;flex:1;}
@@ -115,7 +110,223 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);direct
 .bcanc{flex:1;background:var(--bg);color:var(--muted);border:0.5px solid var(--bdr);border-radius:7px;padding:9px;font-size:12px;font-family:'Cairo',sans-serif;cursor:pointer;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);background:#1A1A1A;color:white;padding:9px 18px;border-radius:20px;font-size:11px;font-weight:600;transition:transform .3s;z-index:200;border:1px solid #F5C518;}
 .toast.show{transform:translateX(-50%) translateY(0);}
-@media(max-width:768px){.sb{width:100%;height:auto;position:relative;flex-direction:row;padding:10px;}.main{margin-right:0;}.nav{flex-direction:row;padding:0;}.logo{display:none;}.usr{display:none;}}
 </style>
 </head>
 <body>
+
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">Darb</div>
+    <div class="login-sub">سجّل دخولك للمتابعة</div>
+    <input class="login-input" id="loginEmail" type="email" placeholder="البريد الإلكتروني"/>
+    <input class="login-input" id="loginPass" type="password" placeholder="كلمة المرور"/>
+    <button class="login-btn" onclick="doLogin()">دخول</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<div class="app" id="appWrap">
+  <div class="sb">
+    <div class="logo"><div class="logo-t">Darb</div><div class="logo-s">نظام متابعة الطلاب</div></div>
+    <div class="nav">
+      <div class="ni active" onclick="sp('home',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>الرئيسية</div>
+      <div class="ni" onclick="sp('tasks',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9,11 12,14 22,4"/><path d="M21,12v7a2,2,0,01-2,2H5a2,2,0,01-2-2V5a2,2,0,012-2h11"/></svg>المهام</div>
+      <div class="ni" onclick="sp('schedule',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>الجدول</div>
+      <div class="ni" onclick="sp('notes',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>الملاحظات</div>
+      <div class="ni" onclick="sp('goals',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>الأهداف</div>
+      <div class="ndiv"></div>
+      <div class="ni" onclick="sp('ai',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>حيدر AI</div>
+    </div>
+    <div class="usr"><div class="uav" id="userAv">أح</div><div><div class="un" id="userName">أحمد</div><div class="up" id="userPts">0 نقطة</div></div></div>
+  </div>
+  <div class="main">
+    <div class="topbar"><div class="pt" id="ptit">الرئيسية</div><div class="dbadge" id="todayDate"></div></div>
+    <div class="content">
+
+      <div class="page active" id="page-home">
+        <div class="wcard">
+          <div class="wt"><h2 id="welcomeMsg">أهلاً!</h2><p id="pendingMsg">جاري التحميل...</p></div>
+          <div style="display:flex;gap:14px;">
+            <div style="text-align:center;"><div class="wsv" id="hPts">0</div><div class="wsl">النقاط</div></div>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="sc"><div class="sl">المهام المكتملة</div><div class="sv" id="doneC">0</div><div class="ss" id="totalC">من أصل 0</div><div class="sbar"><div class="sbf" id="taskPB" style="width:0%"></div></div></div>
+          <div class="sc"><div class="sl">الحضور</div><div class="sv">87%</div><div class="ss">هذا الأسبوع</div><div class="sbar"><div class="sbf" style="width:87%"></div></div></div>
+          <div class="sc"><div class="sl">streak</div><div class="sv" id="streakVal">0</div><div class="ss">أيام متواصلة</div><div class="sbar"><div class="sbf" style="width:50%"></div></div></div>
+        </div>
+        <div class="card"><div class="ch"><div class="ct">مهام اليوم</div><button class="badd" onclick="sp('tasks',document.querySelectorAll('.ni')[1])">عرض الكل</button></div><div id="homeTasks"></div></div>
+      </div>
+
+      <div class="page" id="page-tasks">
+        <div class="card"><div class="ch"><div class="ct">المهام</div><button class="badd" onclick="om('task')">+ إضافة</button></div><div id="tasksList"></div></div>
+      </div>
+
+      <div class="page" id="page-schedule">
+        <div class="card"><div class="ch"><div class="ct">الجدول</div><button class="badd" onclick="om('lesson')">+ إضافة</button></div><div id="schedList"></div></div>
+      </div>
+
+      <div class="page" id="page-notes">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-size:12px;color:var(--muted);" id="notesCnt">0 ملاحظات</div><button class="badd" onclick="om('note')">+ إضافة</button></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="notesList"></div>
+      </div>
+
+      <div class="page" id="page-goals">
+        <div class="card"><div class="ch"><div class="ct">الأهداف</div><button class="badd" onclick="om('goal')">+ إضافة</button></div><div id="goalsList"></div></div>
+      </div>
+
+      <div class="page" id="page-ai">
+        <div class="hchat">
+          <div class="hhead"><div class="hav">🤖</div><div><div class="hname">حيدر</div><div class="hsub">مساعدك الذكي</div></div><div class="hdot"></div></div>
+          <div class="hmsgs" id="hMsgs"><div class="mrow"><div class="mav2 bot">ح</div><div class="bbl bot">أهلاً! أنا حيدر، مساعدك في Darb 👋 كيف أقدر أساعدك؟</div></div></div>
+          <div class="hqbtns"><button class="hqb" onclick="qs('إيه مهامي؟')">مهامي</button><button class="hqb" onclick="qs('محتاج تحفيز')">تحفيز 💪</button><button class="hqb" onclick="qs('تقرير أدائي')">تقريري</button></div>
+          <div class="hinput"><input class="hfi" id="hIn" placeholder="كلّم حيدر..." onkeydown="if(event.key==='Enter')hSend()"/><button class="hsend" onclick="hSend()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg></button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="mover" id="mOv" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="mbox"><div class="mtit" id="mTit"></div><div id="mBdy"></div><div class="mbtns"><button class="bconf" onclick="cfm()">حفظ</button><button class="bcanc" onclick="document.getElementById('mOv').classList.remove('open')">إلغاء</button></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPA_URL='https://efvixbpipxybtqxquyyx.supabase.co';
+const SUPA_KEY='sb_publishable_bOqJiOJFLjAXKqF1Vfvg1w_OIoDmVnE';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+let curUser=null,curMod='',tasks=[],lessons=[],notes=[],goals=[];
+const tagC={'رياضيات':'ty','فيزياء':'tg','عربي':'tgr','إنجليزي':'tb','عام':'tg'};
+const nCols=[{bg:'#FAEEDA',tc:'#854F0B',pc:'#633806'},{bg:'#E6F1FB',tc:'#185FA5',pc:'#0C447C'},{bg:'#EAF3DE',tc:'#3B6D11',pc:'#27500A'},{bg:'#FBEAF0',tc:'#993556',pc:'#72243E'}];
+const pgT={home:'الرئيسية',tasks:'المهام',schedule:'الجدول',notes:'الملاحظات',goals:'الأهداف',ai:'حيدر AI'};
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  if(!email||!pass){document.getElementById('loginErr').textContent='ادخل الإيميل وكلمة المرور';return;}
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){
+    const{data:d2,error:e2}=await sb.auth.signUp({email,password:pass});
+    if(e2){document.getElementById('loginErr').textContent='حصل خطأ، جرب تاني';return;}
+    curUser=d2.user;
+  } else {curUser=data.user;}
+  await initApp();
+}
+
+async function initApp(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('appWrap').style.display='flex';
+  const d=new Date();
+  document.getElementById('todayDate').textContent=d.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long'});
+  let{data:u}=await sb.from('users').select('*').eq('id',curUser.id).single();
+  if(!u){
+    await sb.from('users').insert({id:curUser.id,name:curUser.email.split('@')[0],email:curUser.email,points:0,streak:0,status:'active'});
+    u={name:curUser.email.split('@')[0],points:0,streak:0};
+  }
+  document.getElementById('userName').textContent=u.name;
+  document.getElementById('userAv').textContent=u.name[0];
+  document.getElementById('userPts').textContent=(u.points||0)+' نقطة';
+  document.getElementById('hPts').textContent=(u.points||0);
+  document.getElementById('streakVal').textContent=(u.streak||0);
+  document.getElementById('welcomeMsg').textContent='أهلاً، '+u.name+'! 👋';
+  await loadAll();
+}
+
+async function loadAll(){
+  const uid=curUser.id;
+  const[t,l,n,g]=await Promise.all([
+    sb.from('tasks').select('*').eq('user_id',uid).order('created_at',{ascending:false}),
+    sb.from('lessons').select('*').eq('user_id',uid).order('created_at',{ascending:false}),
+    sb.from('notes').select('*').eq('user_id',uid).order('created_at',{ascending:false}),
+    sb.from('goals').select('*').eq('user_id',uid).order('created_at',{ascending:false})
+  ]);
+  tasks=t.data||[];lessons=l.data||[];notes=n.data||[];goals=g.data||[];
+  renderAll();
+}
+
+function renderAll(){
+  const done=tasks.filter(t=>t.done).length,tot=tasks.length,pend=tasks.filter(t=>!t.done).length;
+  document.getElementById('doneC').textContent=done;
+  document.getElementById('totalC').textContent='من أصل '+tot;
+  document.getElementById('taskPB').style.width=(tot?Math.round(done/tot*100):0)+'%';
+  document.getElementById('pendingMsg').textContent=pend>0?'عندك '+pend+' مهمة لسه':'خلصت كل مهامك! 🎉';
+  document.getElementById('homeTasks').innerHTML=tasks.slice(0,3).map(tH).join('');
+  document.getElementById('tasksList').innerHTML=tasks.map(tH).join('');
+  document.getElementById('schedList').innerHTML=lessons.map(lH).join('');
+  document.getElementById('notesCnt').textContent=notes.length+' ملاحظات';
+  document.getElementById('notesList').innerHTML=notes.map((n,i)=>{const c=nCols[i%nCols.length];return`<div style="border-radius:9px;padding:13px;background:${c.bg};"><div style="font-size:12px;font-weight:700;color:${c.tc};">${n.title}</div><div style="font-size:10px;color:${c.pc};margin-top:4px;">${n.body||''}</div></div>`;}).join('');
+  document.getElementById('goalsList').innerHTML=goals.map(g=>`<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><div style="font-size:11px;font-weight:600;">${g.name}</div><div style="font-size:11px;font-weight:700;color:#D4A017;">${g.percentage}%</div></div><div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden;"><div style="height:100%;background:#F5C518;border-radius:3px;width:${g.percentage}%;"></div></div></div>`).join('');
+}
+
+function tH(t){return`<div class="ti"><div class="tck ${t.done?'done':''}" onclick="tgl('${t.id}',${t.done})"></div><div class="tt ${t.done?'done':''}">${t.text}</div><div class="ttag ${tagC[t.subject]||'tg'}">${t.subject||'عام'}</div><button class="tdl" onclick="del('tasks','${t.id}')">✕</button></div>`;}
+function lH(l){return`<div class="ti"><div style="flex:1;"><div style="font-size:12px;font-weight:600;">${l.name}</div><div style="font-size:10px;color:var(--muted);">${l.teacher||''} · ${l.time||''}</div></div><div style="font-size:10px;padding:2px 8px;border-radius:10px;background:#F1EFE8;color:#5F5E5A;">${l.status||'قادم'}</div><button class="tdl" onclick="del('lessons','${l.id}')">✕</button></div>`;}
+
+async function tgl(id,done){
+  await sb.from('tasks').update({done:!done}).eq('id',id);
+  if(!done){
+    await sb.from('users').update({points:supabase.rpc?undefined:0}).eq('id',curUser.id);
+    const{data:u}=await sb.from('users').select('points').eq('id',curUser.id).single();
+    const newPts=(u?.points||0)+10;
+    await sb.from('users').update({points:newPts}).eq('id',curUser.id);
+    document.getElementById('hPts').textContent=newPts;
+    document.getElementById('userPts').textContent=newPts+' نقطة';
+    shT('أحسنت! +10 نقاط 🎉');
+  }
+  await loadAll();
+}
+
+async function del(table,id){tasks=tasks.filter(x=>x.id!==id);await sb.from(table).delete().eq('id',id);await loadAll();shT('تم الحذف');}
+
+const mT={
+  task:{tit:'إضافة مهمة',bdy:`<div class="fg"><label class="fl">اسم المهمة</label><input class="fi" id="f1" placeholder="مثال: حل تمارين الفيزياء"/></div><div class="fg"><label class="fl">المادة</label><select class="fi" id="f2"><option>رياضيات</option><option>فيزياء</option><option>عربي</option><option>إنجليزي</option><option>عام</option></select></div>`},
+  lesson:{tit:'إضافة درس',bdy:`<div class="fg"><label class="fl">اسم الدرس</label><input class="fi" id="f1"/></div><div class="fg"><label class="fl">المدرس</label><input class="fi" id="f2"/></div><div class="fg"><label class="fl">الموعد</label><input class="fi" id="f3" placeholder="الأحد 10:00 ص"/></div>`},
+  note:{tit:'إضافة ملاحظة',bdy:`<div class="fg"><label class="fl">العنوان</label><input class="fi" id="f1"/></div><div class="fg"><label class="fl">المحتوى</label><textarea class="fi" id="f2" rows="3"></textarea></div>`},
+  goal:{tit:'إضافة هدف',bdy:`<div class="fg"><label class="fl">اسم الهدف</label><input class="fi" id="f1"/></div><div class="fg"><label class="fl">النسبة (%)</label><input class="fi" id="f2" type="number" min="0" max="100" value="0"/></div>`}
+};
+function om(t){curMod=t;const m=mT[t];document.getElementById('mTit').textContent=m.tit;document.getElementById('mBdy').innerHTML=m.bdy;document.getElementById('mOv').classList.add('open');setTimeout(()=>{const f=document.getElementById('f1');if(f)f.focus();},100);}
+async function cfm(){
+  const f1=document.getElementById('f1'),f2=document.getElementById('f2'),f3=document.getElementById('f3');
+  if(!f1||!f1.value.trim()){if(f1)f1.style.borderColor='#E24B4A';return;}
+  const uid=curUser.id;
+  if(curMod==='task')await sb.from('tasks').insert({user_id:uid,text:f1.value.trim(),subject:f2?f2.value:'عام',done:false});
+  else if(curMod==='lesson')await sb.from('lessons').insert({user_id:uid,name:f1.value.trim(),teacher:f2?f2.value.trim():'',time:f3?f3.value.trim():'',status:'قادم'});
+  else if(curMod==='note')await sb.from('notes').insert({user_id:uid,title:f1.value.trim(),body:f2?f2.value.trim():''});
+  else if(curMod==='goal')await sb.from('goals').insert({user_id:uid,name:f1.value.trim(),percentage:parseInt(f2?f2.value:0)||0});
+  document.getElementById('mOv').classList.remove('open');
+  await loadAll();shT('تمت الإضافة ✓');
+}
+
+function sp(n,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  if(el)el.classList.add('active');
+  document.getElementById('ptit').textContent=pgT[n]||n;
+}
+
+const hBrain=(msg)=>{
+  const m=msg.toLowerCase(),pend=tasks.filter(t=>!t.done);
+  if(m.includes('مهام')||m.includes('لسه'))return pend.length?'مهامك اللي لسه:\n'+pend.map((t,i)=>`${i+1}. ${t.text}`).join('\n'):'ماشاء الله خلصت كل مهامك! 🎉';
+  if(m.includes('تحفيز')||m.includes('تعبان'))return'أنت قادر! كل خطوة بتخطوها بتقربك من هدفك 💪 استمر!';
+  if(m.includes('تقرير')||m.includes('أداء'))return`تقريرك:\n✅ مهام منجزة: ${tasks.filter(t=>t.done).length}\n📚 دروس: ${lessons.length}\n📝 ملاحظات: ${notes.length}\n🎯 أهداف: ${goals.length}`;
+  return'فاهمك! 😊 لو محتاج مساعدة في مهامك أو جدولك أنا هنا!';
+};
+let hLoad=false;
+function qs(msg){document.getElementById('hIn').value=msg;hSend();}
+function hSend(){
+  const inp=document.getElementById('hIn'),msg=inp.value.trim();
+  if(!msg||hLoad)return;
+  inp.value='';
+  addM(msg,'user');hLoad=true;
+  showTyp();
+  setTimeout(()=>{removeTyp();addM(hBrain(msg),'bot');hLoad=false;},700);
+}
+function addM(txt,role){const m=document.getElementById('hMsgs'),r=document.createElement('div');r.className='mrow '+role;const av=document.createElement('div');av.className='mav2 '+role;av.textContent=role==='bot'?'ح':'أ';const b=document.createElement('div');b.className='bbl '+role;b.innerHTML=txt.replace(/\n/g,'<br>');r.appendChild(av);r.appendChild(b);m.appendChild(r);m.scrollTop=m.scrollHeight;}
+function showTyp(){const m=document.getElementById('hMsgs'),r=document.createElement('div');r.className='mrow';r.id='typR';const av=document.createElement('div');av.className='mav2 bot';av.textContent='ح';const t=document.createElement('div');t.className='typing';t.innerHTML='<span></span><span></span><span></span>';r.appendChild(av);r.appendChild(t);m.appendChild(r);m.scrollTop=m.scrollHeight;}
+function removeTyp(){const t=document.getElementById('typR');if(t)t.remove();}
+function shT(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+</script>
+</body>
+</html>
