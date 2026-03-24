@@ -1,92 +1,251 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Darb</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Cairo',sans-serif;background:#1A1A1A;color:#fff;direction:rtl;}
-.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.auth-box{background:#222;border-radius:20px;padding:40px;width:340px;text-align:center;}
-.auth-logo{font-size:40px;font-weight:700;color:#F5C518;margin-bottom:6px;letter-spacing:2px;}
-.auth-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:28px;}
-.auth-tabs{display:flex;gap:8px;margin-bottom:24px;}
-.auth-tab{flex:1;padding:9px;border-radius:8px;border:0.5px solid rgba(255,255,255,0.15);background:none;color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;font-family:'Cairo',sans-serif;cursor:pointer;transition:all .2s;}
-.auth-tab.active{background:#F5C518;color:#1A1A1A;border-color:#F5C518;}
-.auth-input{width:100%;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 16px;color:white;font-size:13px;font-family:'Cairo',sans-serif;outline:none;margin-bottom:12px;}
-.auth-input::placeholder{color:rgba(255,255,255,0.3);}
-.auth-btn{width:100%;background:#F5C518;color:#1A1A1A;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;font-family:'Cairo',sans-serif;cursor:pointer;margin-top:4px;transition:all .2s;}
-.auth-btn:hover{background:#D4A017;}
-.auth-err{font-size:12px;color:#E24B4A;margin-top:10px;min-height:20px;}
-.auth-form{display:none;}.auth-form.active{display:block;}
-</style>
-</head>
-<body>
-<div class="auth-wrap">
-  <div class="auth-box">
-    <div class="auth-logo">Darb</div>
-    <div class="auth-sub">نظام متابعة الطلاب</div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchTab('login')">تسجيل الدخول</button>
-      <button class="auth-tab" onclick="switchTab('signup')">حساب جديد</button>
-    </div>
-    <div class="auth-form active" id="loginForm">
-      <input class="auth-input" id="loginName" placeholder="الاسم"/>
-      <input class="auth-input" id="loginPass" type="password" placeholder="كلمة السر"/>
-      <button class="auth-btn" onclick="doLogin()">دخول</button>
-      <div class="auth-err" id="loginErr"></div>
-    </div>
-    <div class="auth-form" id="signupForm">
-      <input class="auth-input" id="signupName" placeholder="الاسم الكامل"/>
-      <input class="auth-input" id="signupPass" type="password" placeholder="كلمة السر"/>
-      <input class="auth-input" id="signupPass2" type="password" placeholder="تأكيد كلمة السر"/>
-      <button class="auth-btn" onclick="doSignup()">إنشاء حساب</button>
-      <div class="auth-err" id="signupErr"></div>
-    </div>
-  </div>
-</div>
-<script>
-const sb=window.supabase.createClient('https://efvixbpipxybtqxquyyx.supabase.co','sb_publishable_bOqJiOJFLjAXKqF1Vfvg1w_OIoDmVnE');
+import React, { useState, useEffect } from "react";
+import "./App.css";
 
-function switchTab(tab){
-  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
-  document.getElementById(tab+'Form').classList.add('active');
-  event.target.classList.add('active');
-}
+const DAYS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
-async function doSignup(){
-  const name=document.getElementById('signupName').value.trim();
-  const pass=document.getElementById('signupPass').value;
-  const pass2=document.getElementById('signupPass2').value;
-  const err=document.getElementById('signupErr');
-  if(!name){err.textContent='اكتب اسمك';return;}
-  if(pass.length<6){err.textContent='كلمة السر لازم تكون 6 أحرف على الأقل';return;}
-  if(pass!==pass2){err.textContent='كلمة السر مش متطابقة';return;}
-  err.textContent='جاري إنشاء الحساب...';
-  const {data,error}=await sb.from('users').insert({name,password:pass,role:'student',points:0,status:'active'}).select().single();
-  if(error){err.textContent='حصل خطأ، جرب تاني';return;}
-  err.style.color='#4CAF50';
-  err.textContent='تم إنشاء الحساب! ادخل دلوقتي 🎉';
-  setTimeout(()=>switchTab('login'),2000);
-}
+function App() {
+  const [theme, setTheme] = useState("dark-yellow"); // dark-yellow / light-yellow
+  const [lang, setLang] = useState("ar"); // ar / en
 
-async function doLogin(){
-  const name=document.getElementById('loginName').value.trim();
-  const pass=document.getElementById('loginPass').value;
-  const err=document.getElementById('loginErr');
-  if(!name||!pass){err.textContent='اكتب اسمك وكلمة السر';return;}
-  err.textContent='جاري الدخول...';
-  const {data,error}=await sb.from('users').select('*').eq('name',name).eq('password',pass).single();
-  if(error||!data){err.textContent='الاسم أو كلمة السر غلط';return;}
-  localStorage.setItem('darb_user',JSON.stringify(data));
-  err.style.color='#4CAF50';
-  err.textContent='أهلاً '+data.name+'! 🎉';
-  setTimeout(()=>location.reload(),1000);
-}
-</script>
-</body>
-</html>
+  const [habits, setHabits] = useState(() => {
+    const saved = localStorage.getItem("habits");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [goals, setGoals] = useState(() => {
+    const saved = localStorage.getItem("goals");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [notes, setNotes] = useState(() => {
+    const saved = localStorage.getItem("notes");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [activeTab, setActiveTab] = useState("habits");
+  const [newHabitName, setNewHabitName] = useState("");
+  const [newGoalName, setNewGoalName] = useState("");
+  const [newNoteText, setNewNoteText] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("habits", JSON.stringify(habits));
+  }, [habits]);
+
+  useEffect(() => {
+    localStorage.setItem("goals", JSON.stringify(goals));
+  }, [goals]);
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
+
+  const addHabit = () => {
+    if (!newHabitName.trim()) return;
+    const newHabit = {
+      id: Date.now(),
+      name: newHabitName.trim(),
+      days: DAYS.map(() => false),
+      streak: 0,
+      trend: "equal",
+    };
+    setHabits((prev) => [...prev, newHabit]);
+    setNewHabitName("");
+  };
+
+  const toggleHabitDay = (habitId, dayIndex) => {
+    setHabits((prev) =>
+      prev.map((h) => {
+        if (h.id !== habitId) return h;
+        const newDays = [...h.days];
+        newDays[dayIndex] = !newDays[dayIndex];
+        const completedCount = newDays.filter(Boolean).length;
+        const newStreak = completedCount;
+        let trend = "equal";
+        if (newStreak > h.streak) trend = "up";
+        else if (newStreak < h.streak) trend = "down";
+        return { ...h, days: newDays, streak: newStreak, trend };
+      })
+    );
+  };
+
+  const addGoal = () => {
+    if (!newGoalName.trim()) return;
+    const newGoal = {
+      id: Date.now(),
+      name: newGoalName.trim(),
+      done: false,
+    };
+    setGoals((prev) => [...prev, newGoal]);
+    setNewGoalName("");
+  };
+
+  const toggleGoal = (goalId) => {
+    setGoals((prev) =>
+      prev.map((g) =>
+        g.id === goalId ? { ...g, done: !g.done } : g
+      )
+    );
+  };
+
+  const addNote = () => {
+    if (!newNoteText.trim()) return;
+    const newNote = {
+      id: Date.now(),
+      text: newNoteText.trim(),
+      createdAt: new Date().toISOString(),
+    };
+    setNotes((prev) => [newNote, ...prev]);
+    setNewNoteText("");
+  };
+
+  const todayCompletedHabits = habits.filter((h) =>
+    h.days[new Date().getDay()]
+  ).length;
+
+  const longestStreak = habits.reduce(
+    (max, h) => (h.streak > max ? h.streak : max),
+    0
+  );
+
+  const goalsDone = goals.filter((g) => g.done).length;
+  const goalsPercent =
+    goals.length === 0 ? 0 : Math.round((goalsDone / goals.length) * 100);
+
+  const weeklyTotals = DAYS.map((_, dayIndex) =>
+    habits.reduce(
+      (sum, h) => sum + (h.days[dayIndex] ? 1 : 0),
+      0
+    )
+  );
+
+  const t = (ar, en) => (lang === "ar" ? ar : en);
+
+  return (
+    <div className={`app ${theme} ${lang === "ar" ? "rtl" : "ltr"}`}>
+      <header className="app-header">
+        <h1>{t("متتبع العادات", "Habit Tracker")}</h1>
+        <div className="controls">
+          <button
+            onClick={() =>
+              setTheme(theme === "dark-yellow" ? "light-yellow" : "dark-yellow")
+          }
+          >
+            {t("تبديل الثيم", "Toggle Theme")}
+          </button>
+          <button
+            onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+          >
+            {lang === "ar" ? "English" : "العربية"}
+          </button>
+        </div>
+      </header>
+
+      <section className="stats">
+        <div className="stat-card">
+          <h3>{t("عادات اليوم", "Today Habits")}</h3>
+          <p>{todayCompletedHabits}</p>
+        </div>
+        <div className="stat-card">
+          <h3>{t("أطول سلسلة", "Longest Streak")}</h3>
+          <p>{longestStreak}</p>
+        </div>
+        <div className="stat-card">
+          <h3>{t("أهداف مكتملة", "Goals Done")}</h3>
+          <p>{goalsDone}/{goals.length}</p>
+        </div>
+        <div className="stat-card">
+          <h3>{t("نسبة الأهداف", "Goals %")}</h3>
+          <p>{goalsPercent}%</p>
+        </div>
+      </section>
+
+      <nav className="tabs">
+        <button
+          className={activeTab === "habits" ? "active" : ""}
+          onClick={() => setActiveTab("habits")}
+        >
+          {t("العادات", "Habits")}
+        </button>
+        <button
+          className={activeTab === "goals" ? "active" : ""}
+          onClick={() => setActiveTab("goals")}
+        >
+          {t("الأهداف", "Goals")}
+        </button>
+        <button
+          className={activeTab === "notes" ? "active" : ""}
+          onClick={() => setActiveTab("notes")}
+        >
+          {t("الملاحظات", "Notes")}
+        </button>
+      </nav>
+
+      {activeTab === "habits" && (
+        <section className="habits-section">
+          <div className="add-row">
+            <input
+              type="text"
+              placeholder={t("عادة جديدة...", "New habit...")}
+              value={newHabitName}
+              onChange={(e) => setNewHabitName(e.target.value)}
+            />
+            <button onClick={addHabit}>{t("إضافة عادة", "Add Habit")}</button>
+          </div>
+
+          <table className="habits-table">
+            <thead>
+              <tr>
+                <th>{t("العادة", "Habit")}</th>
+                {DAYS.map((d) => (
+                  <th key={d}>{d}</th>
+                ))}
+                <th>{t("التقدم", "Progress")}</th>
+                <th>{t("السلسلة", "Streak")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {habits.map((habit) => {
+                const completedDays = habit.days.filter(Boolean).length;
+                const percent =
+                  Math.round((completedDays / DAYS.length) * 100);
+                return (
+                  <tr key={habit.id}>
+                    <td>{habit.name}</td>
+                    {habit.days.map((done, index) => (
+                      <td
+                        key={index}
+                        className={done ? "day done" : "day"}
+                        onClick={() =>
+                          toggleHabitDay(habit.id, index)
+                        }
+                      >
+                        {done ? "✓" : ""}
+                      </td>
+                    ))}
+                    <td>
+                      <div className="progress-bar">
+                        <div
+                          className="fill"
+                          style={{ width: `${percent}%` }}
+                        ></div>
+                      </div>
+                      <span className="percent">{percent}%</span>
+                    </td>
+                    <td>
+                      {habit.trend === "up" ? "↑" : habit.trend === "down" ? "↓" : "→"}{" "}
+                      {habit.streak}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <div className="weekly-chart">
+            <h3>{t("رسم الأسبوع", "Weekly Chart")}</h3>
+            <div className="bars">
+              {weeklyTotals.map((val, i) => (
+                <div key={i} className="bar-wrapper">
+                  <div
+                    className="bar"
+                    style={{ height: `${val * 15}px`
